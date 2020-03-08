@@ -5,7 +5,7 @@ import json as js
 
 url = "http://dotnul.com/api/whois/"
 window = tk.Tk()
-urlreg = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+urlreg = '(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
 def popup(msg):
 	popup = tk.Tk()
@@ -25,8 +25,11 @@ def lookup(frm, lst):
 	ret = re.search(urlreg, val)
 	if ret == None:
 		return
-	val = val.split("://")[1]
+	val = val.replace("http://", "")
+	val = val.replace("https://", "")
 	val = val.replace("www.", "")
+	if "/" in val:
+		val = val.split("/")[0]
 	response = rq.get(url + val)
 	json = js.loads(response.content)
 	if "No match for " in json["whois"]:
