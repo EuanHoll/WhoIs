@@ -20,7 +20,7 @@ lstary = []
 
 def report(val, txt, awin, og_url):
 	txt = txt.strip(' \t\n\r')
-	if not og_url in txt:
+	if not og_url in txt and re.search(urlreg, txt) == None:
 		return
 	val[0] = (True, txt)
 	awin.quit()
@@ -53,8 +53,8 @@ def create_mailto(email, domain, webaddress):
 	url = "mailto:" + email
 	url += "?subject=Possible abuse at " + domain + "&"
 	url +="body=Hello,\n\nI have recently come across what seems to be a spam/abusive" + \
-		" URL which seems to have been\npurchased  from your company. The domain name is " + domain + \
-		" . The web address I came across which appeared to be spam/abusive was " + webaddress + \
+		" website which was\npurchased from your company. The domain name is " + domain + \
+		" .\nThe web page I came across which appeared to be spam/abusive was " + webaddress + \
 		" .\n\nKind Regards\n"
 	url = url.replace(' ', '%20')
 	url = url.replace('\n', '%0D%0A')
