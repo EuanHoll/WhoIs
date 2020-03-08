@@ -69,6 +69,9 @@ def reportabuse():
 		ctn = ""
 		for i in range(len(lstary)):
 			if "Abuse Contact" in lstary[i]:
+				if (len(lstary[i].split(': ')) != 2):
+					popup("No abuse email available")
+					return
 				ctn = lstary[i].split(': ')[1]
 				break
 		wb.open(create_mailto(ctn, dmn, rb[1]), new=1)
