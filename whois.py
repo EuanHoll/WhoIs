@@ -16,9 +16,38 @@ fnt = Font(family='Fixedsys', size=8, weight='normal')
 txtcolour = "#ffffff"
 txtbcolour = "#6b6e70"
 lsthcolour = "#474A4F"
+lstary = []
+
+def report(val, txt, awin, og_url):
+	txt = txt.strip(' \t\n\r')
+	if not og_url in txt:
+		return
+	val[0] = (True, txt)
+	awin.quit()
+	awin.destroy()
 
 def reportpopup(og_url):
-	print("hey")
+	awin = tk.Tk()
+	awin.title("Report Abuse")
+	awin.iconbitmap("logo.ico")
+	awin.configure(bg=bgcolour)
+	w = 500
+	h = 150
+	sw = awin.winfo_screenwidth()
+	sh = awin.winfo_screenheight()
+	awin.geometry('%dx%d+%d+%d' % (w, h, (sw / 2) - (w / 2), (sh / 2) - (h / 2)))
+	lbl = tk.Label(awin, text="Enter the url of the abusive page", bg=bgcolour,
+		font=fnt, fg=txtcolour, anchor='center', pady=10)
+	lbl.pack()
+	txt = tk.Text(awin, bg=txtbcolour, font=fnt, fg=txtcolour, height=3)
+	txt.pack()
+	val = [(False, "")]
+	btn = tk.Button(awin, text="Report", bg=btncolour, font=fnt, fg=txtcolour,
+		activebackground=btnpcolour, activeforeground=txtcolour, anchor='center',
+		command=lambda:report(val, txt.get('1.0', tk.END), awin, og_url))
+	btn.pack()
+	awin.mainloop()
+	return val[0]
 
 def create_mailto(email, domain, webaddress):
 	url = "mailto:" + email
@@ -31,11 +60,18 @@ def create_mailto(email, domain, webaddress):
 	url = url.replace('\n', '%0D%0A')
 	return url
 
-def reportabuse(lst):
-	ary = lst.get(0, 'end')
-	if (len(ary) == 0):
+def reportabuse():
+	if (len(lstary) == 0):
 		return
-	wb.open(create_mailto("e", "e", "e"), new=1)
+	dmn = lstary[0].split(':')[1].replace(' ', '').lower()
+	rb = reportpopup(dmn)
+	if rb[0]:
+		ctn = ""
+		for i in range(len(lstary)):
+			if "Abuse Contact" in lstary[i]:
+				ctn = lstary[i].split(': ')[1]
+				break
+		wb.open(create_mailto(ctn, dmn, rb[1]), new=1)
 
 def popup(msg):
 	popup = tk.Tk()
@@ -72,6 +108,8 @@ def lookup(frm, lst):
 	while not "DNSSEC:" in info[i]: 
 		lst.insert(i, info[i])
 		i += 1
+	lstary.clear()
+	lstary.extend(list(lst.get(0, tk.END)))
 
 def setup_gui(win):
 	win.title("Who Is Domain Checker")
@@ -97,7 +135,7 @@ def setup_gui(win):
 		font=fnt, fg=txtcolour, activebackground=btnpcolour,
 		activeforeground=txtcolour)
 	go.grid(row=0, column=2, pady=10)
-	report = tk.Button(frm, text="Report", command=lambda: reportabuse(lst),
+	report = tk.Button(frm, text="Report Abuse", command=reportabuse,
 		name="report", width=20, bg=btncolour, font=fnt,
 		fg=txtcolour, activebackground=btnpcolour,
 		activeforeground=txtcolour)
