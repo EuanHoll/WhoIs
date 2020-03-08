@@ -99,7 +99,7 @@ def lookup(frm, lst):
 		val = val.split("/")[0]
 	response = rq.get(url + val)
 	json = js.loads(response.content)
-	if "No match for " in json["whois"]:
+	if json["whois"] == None or "No match for " in json["whois"]:
 		popup("The response or domain was invalid")
 		return
 	info = json["whois"].split("<br />")
