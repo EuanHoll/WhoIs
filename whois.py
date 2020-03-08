@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter.font import Font
 import requests as rq
 import re
 import json as js
@@ -6,6 +8,13 @@ import json as js
 url = "http://dotnul.com/api/whois/"
 window = tk.Tk()
 urlreg = '(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+bgcolour = "#222629"
+btncolour = "#86c232"
+btnpcolour = "#61892F"
+fnt = Font(family='Fixedsys', size=8, weight='normal')
+txtcolour = "#ffffff"
+txtbcolour = "#6b6e70"
+lsthcolour = "#474A4F"
 
 def popup(msg):
 	popup = tk.Tk()
@@ -46,16 +55,20 @@ def setup_gui(win):
 	win.title("Who Is Domain Checker")
 	win.resizable = False
 	win.iconbitmap("logo.ico")
+	win.configure(background=bgcolour)
 	sw = win.winfo_screenwidth()
 	sh = win.winfo_screenheight()
-	win.geometry('720x500+%d+%d' % ((sw / 2) - 250, (sh / 2) - 150))
-	frm = tk.Frame(win, height=150, width=500)
-	lbl = tk.Label(frm, text="Domain To Lookup : ").grid(row=0, pady=10)
-	inp = tk.Entry(frm, name="domainin", width=50)
+	win.geometry('920x500+%d+%d' % ((sw / 2) - 250, (sh / 2) - 150))
+	frm = tk.Frame(win, height=150, width=500, bg=bgcolour)
+	lbl = tk.Label(frm, text="Domain To Lookup : ", bg=bgcolour, font=fnt, fg=txtcolour)
+	lbl.grid(row=0, column=0, pady=10)
+	inp = tk.Entry(frm, name="domainin", width=50, bg=txtbcolour, font=fnt, fg=txtcolour, bd=0)
 	inp.grid(row=0, column=1, pady=10)
-	lst = tk.Listbox(frm, name="lstbox", height=25, width=85)
-	go = tk.Button(frm, text="Look Up", command= lambda: lookup(frm, lst), name="search").grid(row=0, column=2, pady=10)
+	lst = tk.Listbox(frm, name="lstbox", height=25, width=85, bg=txtbcolour, font=fnt, fg=txtcolour, selectbackground=lsthcolour)
 	lst.grid(row=1, column=1)
+	lst.configure(bd=0, highlightthickness=0)
+	go = tk.Button(frm, text="Look Up", command= lambda: lookup(frm, lst), name="search", bg=btncolour, font=fnt, fg=txtcolour, activebackground=btnpcolour, activeforeground=txtcolour)
+	go.grid(row=0, column=2, pady=10)
 	frm.pack()
 
 def main():
